@@ -7,10 +7,13 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 		ExportDebug|Any CPU = ExportDebug|Any CPU
 		ExportRelease|Any CPU = ExportRelease|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5CEE0214-D2A0-46E1-B5F2-25911026EDD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5CEE0214-D2A0-46E1-B5F2-25911026EDD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5CEE0214-D2A0-46E1-B5F2-25911026EDD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5CEE0214-D2A0-46E1-B5F2-25911026EDD0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5CEE0214-D2A0-46E1-B5F2-25911026EDD0}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
 		{5CEE0214-D2A0-46E1-B5F2-25911026EDD0}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
 		{5CEE0214-D2A0-46E1-B5F2-25911026EDD0}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU

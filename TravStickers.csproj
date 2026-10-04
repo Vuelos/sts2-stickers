@@ -1,12 +1,15 @@
-﻿<Project Sdk="Godot.NET.Sdk/4.5.1" InitialTargets="CheckDependencyPaths">
+﻿<Project Sdk="Godot.NET.Sdk/4.5.2" InitialTargets="CheckDependencyPaths">
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>true</ImplicitUsings>
         <Nullable>enable</Nullable> <!--Makes code analysis regarding null values stricter.-->
+        <NoWarn>CS8602</NoWarn>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <DefaultItemExcludes>packages/**</DefaultItemExcludes>
         <AppOutputBase>$(MSBuildProjectDirectory)\</AppOutputBase>
         <PathMap>$(AppOutputBase)=.\</PathMap>
+        <Version>1.0.4</Version>
+        <Sts2Version>0.111.0</Sts2Version>
     </PropertyGroup>
 
     <!-- OS Detection -->
@@ -19,14 +22,12 @@
         <IsOSX Condition="$([MSBuild]::IsOSPlatform('OSX'))">true</IsOSX>
     </PropertyGroup>
 
-    <!-- // NOTE: Megadot is version 4.5.1, and the game won't load your .pck if the Godot version used is newer. -->
-
     <!-- Windows -->
     <PropertyGroup Condition="'$(IsWindows)' == 'true'">
         <AutoSteamPath>$(registry:HKEY_CURRENT_USER\Software\Valve\Steam@SteamPath)\steamapps</AutoSteamPath>
         <SteamLibraryPath Condition="Exists('$(AutoSteamPath)/common/Slay the Spire 2')">$(AutoSteamPath)</SteamLibraryPath>
 
-        <GodotPath>C:/Users/tcarl/OneDrive/Desktop/Projects/sts2/megadot/MegaDot_v4.5.1-stable_mono_win64.exe</GodotPath>
+        <GodotExecutable Condition="'$(GodotExecutable)' == ''">D:\Dev Tools\Godot_v4.5.2-stable_mono_win64\Godot_v4.5.2-stable_mono_win64.exe</GodotExecutable>
         <!-- If on Windows and Slay the Spire 2 is not installed in your default steam library, adjust the following.-->
         <SteamLibraryPath Condition="'$(SteamLibraryPath)' == ''">C:/Program Files (x86)/Steam/steamapps</SteamLibraryPath>
 
@@ -39,7 +40,7 @@
     <!-- Linux -->
     <PropertyGroup Condition="'$(IsLinux)' == 'true'">
         <SteamLibraryPath Condition="'$(SteamLibraryPath)' == ''">$(HOME)/.local/share/Steam/steamapps</SteamLibraryPath>
-        <GodotPath Condition="'$(GodotPath)' == ''">$(SteamLibraryPath)/common/Godot Engine/godot.x11.opt.tools.64</GodotPath>
+        <GodotExecutable Condition="'$(GodotExecutable)' == ''">$(SteamLibraryPath)/common/Godot Engine/godot.x11.opt.tools.64</GodotExecutable>
 
         <!-- The below should not need to be changed. -->
         <Sts2Path>$(SteamLibraryPath)/common/Slay the Spire 2</Sts2Path>
@@ -50,7 +51,7 @@
     <!-- macOS -->
     <PropertyGroup Condition="'$(IsOSX)' == 'true'">
         <SteamLibraryPath Condition="'$(SteamLibraryPath)' == ''">$(HOME)/Library/Application Support/Steam/steamapps</SteamLibraryPath>
-        <GodotPath Condition="'$(GodotPath)' == ''">$(HOME)/Applications/Godot_mono.app/Contents/MacOS/Godot</GodotPath>
+        <GodotExecutable Condition="'$(GodotExecutable)' == ''">$(HOME)/Applications/Godot_mono.app/Contents/MacOS/Godot</GodotExecutable>
 
         <!-- The below should not need to be changed. -->
         <Sts2Path>$(SteamLibraryPath)/common/Slay the Spire 2</Sts2Path>
@@ -77,27 +78,27 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="*" PrivateAssets="All"/>
-        <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*"/>
-        <AdditionalFiles Include="TravStickers/localization/**/*.json"/>
+        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="*" PrivateAssets="All" />
+        <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*" />
+        <AdditionalFiles Include="TravStickers/localization/**/*.json" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="TravStickers/**"/>
-        <Compile Remove="materials/**"/>
-        <Compile Remove="shaders/**"/>
-        <Compile Remove="images/**"/>
-        <EmbeddedResource Remove="TravStickers/**"/>
-        <EmbeddedResource Remove="materials/**"/>
-        <EmbeddedResource Remove="shaders/**"/>
-        <EmbeddedResource Remove="images/**"/>
+        <Compile Remove="TravStickers/**" />
+        <Compile Remove="materials/**" />
+        <Compile Remove="shaders/**" />
+        <Compile Remove="images/**" />
+        <EmbeddedResource Remove="TravStickers/**" />
+        <EmbeddedResource Remove="materials/**" />
+        <EmbeddedResource Remove="shaders/**" />
+        <EmbeddedResource Remove="images/**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include=".gitignore"/>
-        <None Include="TravStickers.json"/>
-        <None Include="project.godot"/>
-        <None Include="TravStickers/**"/>
+        <None Include=".gitignore" />
+        <None Include="TravStickers.template.json" />
+        <None Include="project.godot" />
+        <None Include="TravStickers/**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -107,34 +108,52 @@
         </PackageReference>
     </ItemGroup>
 
-    <Target Name="CheckDependencyPaths">
-        <Error
-                Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'"
-                Condition="'$(Sts2DataDir)' == '' or !Exists('$(Sts2DataDir)')"/>
-        <Error
-                Text=" Godot not found at path '$(GodotPath)'"
-                Condition="'$(GodotPath)' == '' or !Exists('$(GodotPath)')"/>
-    </Target>
+    <Target Name="UpdateManifestVersion" BeforeTargets="BeforeBuild">
+        <PropertyGroup>
+            <ManifestTemplateFile>$(MSBuildProjectDirectory)/$(MSBuildProjectName).template.json</ManifestTemplateFile>
+            <ManifestOutputFile>$(IntermediateOutputPath)$(MSBuildProjectName).json</ManifestOutputFile>
+        </PropertyGroup>
 
-    <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
-        <Message Text="Copying .dll and manifest to mods folder." Importance="high"/>
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
-        <Copy SourceFiles="TravStickers.json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
-        <Message Text="Copying BaseLib to mods folder." Importance="high"/>
+        <Message Text="Updating version in $(ManifestOutputFile) to $(Version)" Importance="high"/>
+
         <ItemGroup>
-            <BaseLibFiles Include="$(NuGetPackageRoot)/alchyr.sts2.baselib/**/lib/**/BaseLib.dll;$(NuGetPackageRoot)/alchyr.sts2.baselib/**/Content/BaseLib.pck;$(NuGetPackageRoot)/alchyr.sts2.baselib/**/Content/BaseLib.json;"/>
+            <FileLines Include="$([System.IO.File]::ReadAllText($(ManifestTemplateFile))
+                .Replace('__THIS_VERSION__', '$(Version)')
+                .Replace('__GAME_VERSION__', '$(Sts2Version)'))"/>
         </ItemGroup>
-        <Copy SourceFiles="@(BaseLibFiles)" DestinationFolder="$(ModsPath)BaseLib/"/>
+
+        <WriteLinesToFile File="$(ManifestOutputFile)" Lines="@(FileLines)" Overwrite="true" WriteOnlyWhenDifferent="true"/>
     </Target>
 
-    <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
-        <Message Text="Exporting Godot .pck to mods folder" Importance="high"/>
-        <Exec Command="&quot;$(GodotPath)&quot; --headless --export-pack &quot;BasicExport&quot; &quot;$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck&quot;"
-              EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1"
-              ContinueOnError="WarnAndContinue"/>
+    <Target Name="CheckDependencyPaths">
+        <Error Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'" Condition="'$(Sts2DataDir)' == '' or !Exists('$(Sts2DataDir)')" />
     </Target>
 
-    <Target Name="GodotPublishSkipped" AfterTargets="Publish" Condition="'$(GodotPath)' == '' or !Exists('$(GodotPath)')">
-        <Message Text="Skipping Godot .pck export because GodotPath is not configured." Importance="high"/>
+    <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent" Condition="'$(SkipCopyToMods)' != 'true'">
+        <Message Text="Copying .dll and manifest to mods folder." Importance="high" />
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
+        <Copy SourceFiles="$(IntermediateOutputPath)$(MSBuildProjectName).json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" />
+        <Message Text="Copying BaseLib to mods folder." Importance="high" />
+        <ItemGroup>
+            <BaseLibFiles Include="$(NuGetPackageRoot)/alchyr.sts2.baselib/**/lib/**/BaseLib.dll;$(NuGetPackageRoot)/alchyr.sts2.baselib/**/Content/BaseLib.pck;$(NuGetPackageRoot)/alchyr.sts2.baselib/**/Content/BaseLib.json;" />
+        </ItemGroup>
+        <Copy SourceFiles="@(BaseLibFiles)" DestinationFolder="$(ModsPath)BaseLib/" />
+    </Target>
+
+    <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(SkipGodotExport)' != 'true' And '$(GODOT_SKIP_EXPORT)' != 'true'">
+        <Warning Text="Godot executable not found at '$(GodotExecutable)', skipping pck export." Condition="!Exists('$(GodotExecutable)')" />
+        <Message Text="Exporting $(MSBuildProjectName).pck via Godot." Importance="high" Condition="Exists('$(GodotExecutable)')" />
+        <!-- export-pack packs resources into a pck without requiring export templates
+             (the StS2 mod toolchain MSIL export templates are not installed here). -->
+        <Exec Command="&quot;$(GodotExecutable)&quot; --headless --path &quot;$(MSBuildProjectDirectory)&quot; --export-pack &quot;BasicExport&quot; &quot;$(MSBuildProjectName).pck&quot;"
+              WorkingDirectory="$(MSBuildProjectDirectory)"
+              EnvironmentVariables="GODOT_SKIP_EXPORT=true;MSBUILDDISABLENODEREUSE=1"
+              Condition="Exists('$(GodotExecutable)')" />
+    </Target>
+
+    <Target Name="CopyPckToMods" AfterTargets="Publish">
+        <Message Text="Copying $(MSBuildProjectName).pck to mods folder." Importance="high" Condition="Exists('$(MSBuildProjectDirectory)/$(MSBuildProjectName).pck')" />
+        <Warning Text="$(MSBuildProjectName).pck not found in project directory. Export it from Godot first." Condition="!Exists('$(MSBuildProjectDirectory)/$(MSBuildProjectName).pck')" />
+        <Copy SourceFiles="$(MSBuildProjectDirectory)/$(MSBuildProjectName).pck" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/" Condition="Exists('$(MSBuildProjectDirectory)/$(MSBuildProjectName).pck')" />
     </Target>
 </Project>

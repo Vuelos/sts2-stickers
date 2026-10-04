@@ -1,0 +1,16 @@
+{
+  "id": "TravStickers",
+  "name": "Sticker the Spire",
+  "author": "Travotavo && GGro",
+  "description": "Stickers for Slay the Spire 2!",
+  "version": "__THIS_VERSION__",
+  "has_pck": true,
+  "has_dll": true,
+  "dependencies": [
+    {
+      "id": "BaseLib"
+    }
+  ],
+  "affects_gameplay": false,
+  "min_game_version": "__GAME_VERSION__"
+}
