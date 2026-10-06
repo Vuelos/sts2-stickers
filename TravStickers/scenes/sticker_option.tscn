@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://ny4013ffyff0"]
 
 [ext_resource type="Texture2D" uid="uid://jokumucacays" path="res://TravStickers/images/stickers/Defect_Clear.png" id="1_65pah"]
-[ext_resource type="Script" uid="uid://c1p4vjdrnp64f" path="res://TravStickersCode/ui/StickerOption.cs" id="2_dt56w"]
+[ext_resource type="Script" uid="uid://c1b5x03qaysvr" path="res://TravStickersCode/ui/StickerOption.cs" id="2_dt56w"]
 
 [node name="Sticker" type="CenterContainer"]
 anchors_preset = 8
@@ -19,7 +19,7 @@ script = ExtResource("2_dt56w")
 
 [node name="stickerTexture" type="TextureRect" parent="."]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(256, 256)
+custom_minimum_size = Vector2(80, 80)
 layout_mode = 2
 mouse_filter = 2
 texture = ExtResource("1_65pah")

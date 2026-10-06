@@ -1,9 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://4luf2l2gsoa6"]
+[gd_scene load_steps=14 format=3 uid="uid://4luf2l2gsoa6"]
 
-[ext_resource type="Script" uid="uid://cgd0o3wakwcrh" path="res://TravStickersCode/ui/StickerUi.cs" id="1_w27hd"]
+[ext_resource type="Script" uid="uid://tvijxhlwv2o" path="res://TravStickersCode/ui/StickerUi.cs" id="1_w27hd"]
 [ext_resource type="Texture2D" uid="uid://3yh26ye2kc01" path="res://TravStickers/images/ui/trash_icon.png" id="2_31oj7"]
-[ext_resource type="Script" uid="uid://cdl3ys1dygj0p" path="res://TravStickersCode/ui/sticker_placement_node.cs" id="2_y1avu"]
-[ext_resource type="Script" uid="uid://jiasds6gg0xw" path="res://TravStickersCode/ui/OpenEditorButton.cs" id="3_vcuq3"]
+[ext_resource type="PackedScene" uid="uid://cijjjc00a3gt8" path="res://TravStickers/scenes/sticker_sheet.tscn" id="2_62upk"]
+[ext_resource type="Texture2D" uid="uid://m33xqufpu1gd" path="res://TravStickers/images/ui/close_icon.png" id="2_au7wq"]
+[ext_resource type="Script" uid="uid://u73ilm27j31j" path="res://TravStickersCode/ui/sticker_placement_node.cs" id="2_y1avu"]
+[ext_resource type="Script" uid="uid://cbxwfgyt307f5" path="res://TravStickersCode/ui/CloseEditorButton.cs" id="3_aqmub"]
+[ext_resource type="Script" uid="uid://5mu4a6nme4gr" path="res://TravStickersCode/ui/OpenEditorButton.cs" id="3_vcuq3"]
+[ext_resource type="Script" uid="uid://cunc7fbohhpyf" path="res://TravStickersCode/ui/ClearAllButton.cs" id="4_clearall"]
 [ext_resource type="Texture2D" uid="uid://bjqjqddw5h86o" path="res://TravStickers/images/ui/RotateDemo.png" id="5_nqtl6"]
 [ext_resource type="Texture2D" uid="uid://bkd6wax1ghvna" path="res://TravStickers/images/ui/ScrollDemo.png" id="6_au7wq"]
 
@@ -12,38 +16,38 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("StickerSheet/BG:position")
+tracks/0/path = NodePath("travCardAnchor:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 0)]
+"values": [Vector2(576, 324)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("travCardAnchor:position")
+tracks/1/path = NodePath("Panel:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(576, 324)]
+"values": [Color(1, 1, 1, 1)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Panel:modulate")
+tracks/2/path = NodePath("StickerSheet:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(1, 1, 1, 1)]
+"values": [Vector2(1920, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_w27hd"]
@@ -53,38 +57,38 @@ step = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("StickerSheet/BG:position")
+tracks/0/path = NodePath("travCardAnchor:position")
 tracks/0/interp = 2
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, 0), Vector2(-958, 0)]
+"values": [Vector2(809.99994, 329), Vector2(485, 329)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("travCardAnchor:position")
-tracks/1/interp = 2
+tracks/1/path = NodePath("Panel:modulate")
+tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(809.99994, 329), Vector2(485, 329)]
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Panel:modulate")
+tracks/2/path = NodePath("StickerSheet:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.5),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+"values": [Vector2(1920, 0), Vector2(1320, 0)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_31oj7"]
@@ -116,40 +120,43 @@ libraries = {
 &"": SubResource("AnimationLibrary_31oj7")
 }
 
-[node name="StickerSheet" type="Control" parent="."]
+[node name="StickerSheet" parent="." instance=ExtResource("2_62upk")]
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 1920.0
-offset_right = 959.0
-grow_horizontal = 0
-grow_vertical = 2
 
-[node name="BG" type="PanelContainer" parent="StickerSheet"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="StickerSheet/BG"]
-layout_mode = 2
-theme_override_constants/margin_left = 32
-theme_override_constants/margin_top = 64
-theme_override_constants/margin_right = 32
-
-[node name="ScrollContainer" type="ScrollContainer" parent="StickerSheet/BG/MarginContainer"]
-layout_mode = 2
-
-[node name="stickerBox" type="FlowContainer" parent="StickerSheet/BG/MarginContainer/ScrollContainer"]
+[node name="CloseButton" type="TextureRect" parent="."]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/h_separation = 36
-theme_override_constants/v_separation = 36
-alignment = 1
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -1120.0
+offset_top = 10.0
+offset_right = -992.0
+offset_bottom = 138.0
+grow_horizontal = 0
+texture = ExtResource("2_au7wq")
+expand_mode = 1
+script = ExtResource("3_aqmub")
+
+[node name="ClearAllButton" type="TextureRect" parent="."]
+unique_name_in_owner = true
+modulate = Color(1, 0, 0, 1)
+custom_minimum_size = Vector2(128, 128)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.41197917
+anchor_top = 0.5
+anchor_right = 0.41197917
+anchor_bottom = 0.5
+offset_left = -543.0
+offset_top = -95.0
+offset_right = -415.0
+offset_bottom = 33.0
+texture = ExtResource("2_31oj7")
+expand_mode = 1
+script = ExtResource("4_clearall")
+metadata/_edit_use_anchors_ = true
 
 [node name="TrashButton" type="TextureRect" parent="."]
 unique_name_in_owner = true
@@ -179,7 +186,7 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -384.0
 offset_top = -216.0
-offset_right = -84.0
+offset_right = -83.99982
 offset_bottom = 206.0
 grow_horizontal = 2
 grow_vertical = 2

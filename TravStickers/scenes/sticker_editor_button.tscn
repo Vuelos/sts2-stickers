@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dv3nglnijec0c"]
 
-[ext_resource type="Script" uid="uid://jiasds6gg0xw" path="res://TravStickersCode/ui/OpenEditorButton.cs" id="1_no0ex"]
+[ext_resource type="Script" uid="uid://5mu4a6nme4gr" path="res://TravStickersCode/ui/OpenEditorButton.cs" id="1_no0ex"]
 [ext_resource type="Texture2D" uid="uid://jokumucacays" path="res://TravStickers/images/stickers/Defect_Clear.png" id="2_6o6co"]
 
 [node name="StickerEditorButton" type="Control"]
@@ -18,6 +18,7 @@ grow_vertical = 0
 script = ExtResource("1_no0ex")
 
 [node name="Panel" type="Panel" parent="."]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

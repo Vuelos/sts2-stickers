@@ -4,13 +4,14 @@ using MegaCrit.Sts2.Core.Assets;
 using MegaCrit.Sts2.Core.Nodes.GodotExtensions;
 using TravStickers;
 
+namespace TravStickers.TravStickersCode;
+
 public partial class StickerOption : NClickableControl
 {
-	// Called when the node enters the scene tree for the first time.
 	private StickerUi? parent;
 	public bool _isDummy = false;
-	private TextureRect _stickerTexture;
-	public String StickerID;
+	private TextureRect? _stickerTexture;
+	public required String StickerID;
 	public override void _Ready()
 	{
 		ConnectSignals();
@@ -18,21 +19,21 @@ public partial class StickerOption : NClickableControl
 	}
 
 	private static readonly string _scenePath = "res://" + MainFile.ModId + "/scenes/sticker_option.tscn";
-	public static StickerOption Create(StickerUi parent)
+	public static StickerOption Create(StickerUi? parent)
 	{
 		StickerOption instance = PreloadManager.Cache.GetScene(_scenePath).Instantiate<StickerOption>();
 		instance.parent = parent;
 		return instance;
 	}
 
-	public void setTexture(String StickerID)
-	{
-		var texture = ResourceLoader.Load<Texture2D>("res://" + MainFile.ModId + "/images/stickers/" + StickerID + ".png");
-		_stickerTexture.Texture = texture;
-		this.StickerID = StickerID;
-		//_stickerTexture.PivotOffset = new Vector2((float)texture.GetWidth() / 2,(float)texture.GetHeight() / 2);
-		//_stickerTexture.Position = -_stickerTexture.PivotOffset;
-	}
+    public void setTexture(String StickerID)
+    {
+        var texture = StickerTexture.Load(StickerID);
+        if (texture == null || _stickerTexture == null) return;
+
+        _stickerTexture.Texture = texture;
+        this.StickerID = StickerID;
+    }
 	
 	protected override void OnFocus()
 	{
@@ -47,7 +48,10 @@ public partial class StickerOption : NClickableControl
 		if (_isDummy) return;
 		StickerOption dummy = (StickerOption)Duplicate();
 		dummy.StickerID = this.StickerID;
-		parent.grabSticker(dummy);
+		if (parent != null)
+			parent.grabSticker(dummy);
+		else
+			MapStickers.GrabStickerFromSheet(dummy);
 	}
 
 	protected override void OnRelease()
